@@ -1,9 +1,4 @@
 import random
-trailcell = "."
-blankcell = " "
-playercell = "O"
-wallcell = "#"
-goalcell = "X"
 y = 10
 x = 10
 walls = 20
@@ -33,15 +28,13 @@ class cell (object):
         elif self.ID == 4:
             return "X" #goal cell
         else:
-            
             return " "
     def destroy(self):
-        self.x = -1
-        self.y = -1
+        self.ID = 0
         
     
-def PrintMap(position,X,playercell):
-    X[position[0]][position[1]] = cell(2)
+def PrintMap(position,X):
+    X[position[0]][position[1]] = cell(2)#playercell
     text = ""
     for list in X:
         for string in list:
@@ -55,21 +48,21 @@ def CreateMap(x,y):
     X.clear()
     Y.clear()
     for i in range(0,y):
-        Y.append(cell(0))
+        Y.append(cell(0))#blankcell
     for i in range(0,x):
         X.append(Y[:])
     for i in range(0,walls):
-        X[random.randint(0,x-1)][random.randint(0,y-1)] = cell(1)
+        X[random.randint(0,x-1)][random.randint(0,y-1)] = cell(1)#wallcell
     Goal = [random.randint(0,x-1),random.randint(0,y-1)]
-    X[Goal[0]][Goal[1]] = cell(4)
+    X[Goal[0]][Goal[1]] = cell(4)#goalcell
 
 ##Main Loop
 while playagain:
     CreateMap(x,y)
     while position != Goal:
-        PrintMap(position,X,playercell)
+        PrintMap(position,X)
     ## move input
-        X[position[0]][position[1]] = cell(3)
+        X[position[0]][position[1]] = cell(3)#trailcell
         destination = position[:]
         move = input("Up(w),Left(a), Down(s), or Right(d)?")
         if move == "a":
@@ -89,13 +82,13 @@ while playagain:
         or destination[1] > y-1:
             print("You cannot go that way")
             destination = position[:]
-        if X[destination[0]][destination[1]].ID == 1:
+        if X[destination[0]][destination[1]].ID == 1:#wallcell
             print("You cannot go that way")
         else:
             position = destination[:]
     ## win
     print("Success!")
-    PrintMap(position,X,playercell)
+    PrintMap(position,X)
     while userinput != "Y" and userinput != "N":
         userinput = input("Play again? Y/N")
         if userinput == "Y":
