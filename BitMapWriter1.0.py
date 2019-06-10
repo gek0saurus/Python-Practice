@@ -1,0 +1,59 @@
+def LittleEndianToInt(Hex):
+    byte = ""
+    text = ""
+    length = int(len(Hex))
+    for i in range(int(length/2)):
+        byte =  Hex[length-(i+1)*2:length-(i+1)*2+2]
+        text = text + byte
+    return(int(text,16))
+
+
+def CreateNewTwentyFourBit(Map):
+    print("A file should be saved")
+    NewBitmap = open("NewBitmap.bmp","wb")
+    #Header
+    fullhexstring = ""
+    header = ""
+    body = ""
+    hexlist = []
+    signature = "424d" #BM
+    filesize ="e61d0000" #7654
+    reserved = "00000000"
+    offbits = "32000000"
+    headersize = "28000000"
+    width = "32000000" #50 pixels
+    height = "32000000" #50 pixels
+    planes = "0100"
+    bitcount = "1800"#24bit
+    compression = "00000000"
+    imagesize = "b01d0000"#?
+    Xpixelspermeter = "00000000"
+    Ypixelspermeter = "00000000"
+    clrused = "00000000"
+    clrimportant = "00000000"
+    header = signature+filesize+reserved+offbits+headersize+width+height+planes\
+             +bitcount+compression+imagesize+Xpixelspermeter+Ypixelspermeter\
+             +clrused+clrimportant 
+    #Body
+    colorhex = ""
+    widthint = LittleEndianToInt(width)
+    heightint = LittleEndianToInt(height)
+
+    #this block is temporary
+    for i in range (heightint):
+        for j in range(widthint):
+            if j%2 == 1:
+                colorhex = "ffffff"
+            else:
+                colorhex = "000000"
+            body = body + colorhex
+        body = body + "0000" #padding
+    #Compile
+    fullhexstring = header + body
+    hexlist = [int(fullhexstring[i:i+2],16) for i in range(0, len(fullhexstring), 2)]
+    array = bytearray(hexlist)
+    NewBitmap.write(array)
+    NewBitmap.close
+
+CreateNewTwentyFourBit([])
+#LittleEndianToInt(str(32000000))
